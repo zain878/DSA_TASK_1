@@ -12,7 +12,7 @@ public class taskHeap {
     }
 
     int parent(int i){
-        return (i-1) / 2;
+        return (i - 1) / 2;
     }
 
     int leftChild(int i){
@@ -25,23 +25,31 @@ public class taskHeap {
 
     public void insert(int value){
         if(size == maxSize){
-            System.out.println("No More Space ");
+            System.out.println("No More Space");
+            return;
         }
 
         heap[size] = value;
         int current = size;
         size++;
+
+        while(current > 0 && heap[current] > heap[parent(current)]){
+            int temp = heap[current];
+            heap[current] = heap[parent(current)];
+            heap[parent(current)] = temp;
+            current = parent(current);
+        }
     }
 
-    void heapify(int i , int maxSize , int arr[]){
+    void heapify(int i, int n, int arr[]){
         int left = leftChild(i);
         int right = rightChild(i);
         int largest = i;
 
-        if(left < maxSize && arr[left] > arr[largest]){
+        if(left < n && arr[left] > arr[largest]){
             largest = left;
         }
-        if(right < maxSize && arr[right] > arr[largest]){
+        if(right < n && arr[right] > arr[largest]){
             largest = right;
         }
 
@@ -49,18 +57,19 @@ public class taskHeap {
             int temp = arr[i];
             arr[i] = arr[largest];
             arr[largest] = temp;
+            heapify(largest, n, arr);
         }
-        heapify(i , maxSize , arr);
     }
 
     void display(){
-        for (int i = 0; i < heap.length; i++){
+        for (int i = 0; i < size; i++){
             System.out.print(heap[i] + " ");
         }
+        System.out.println();
     }
+
     public static void main(String[] args) {
         taskHeap heap = new taskHeap(5);
-
         Scanner Scan = new Scanner(System.in);
 
         for (int i = 0; i < 5; i++){
@@ -68,8 +77,15 @@ public class taskHeap {
             int element = Scan.nextInt();
             heap.insert(element);
         }
-        heap.display();
-        heap.heapify(0,5, );
 
+        System.out.println("Heap after insertion:");
+        heap.display();
+
+        for(int i = (heap.size / 2) - 1; i >= 0; i--){
+            heap.heapify(i, heap.size, heap.heap);
+        }
+
+        System.out.println("Heap after heapify:");
+        heap.display();
     }
 }
